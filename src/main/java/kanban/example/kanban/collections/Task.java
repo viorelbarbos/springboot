@@ -2,7 +2,6 @@ package kanban.example.kanban.collections;
 
 import java.util.Date;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Task {
-    private ObjectId id;
+    private String id;
 
     private String title;
     private String description;

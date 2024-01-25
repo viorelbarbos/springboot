@@ -3,7 +3,6 @@ package kanban.example.kanban.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -57,6 +56,8 @@ public class UserService {
     }
 
     public User updateUser(@NonNull User user) {
+
+        user.setUpdatedAt((new java.util.Date()).toString());
         return userRepository.save(user);
     }
 

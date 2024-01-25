@@ -1,5 +1,7 @@
 package kanban.example.kanban.services;
 
+import java.util.Date;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,12 +31,14 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.ROLE_USER)
+                .createdAt((new Date()).toString())
+                .updatedAt((new Date()).toString())
                 .build();
 
         user = userService.createUser(user);
 
         if (user == null)
-           return "Email already exists";
+            return "Email already exists";
 
         return "Registration successful";
     }
