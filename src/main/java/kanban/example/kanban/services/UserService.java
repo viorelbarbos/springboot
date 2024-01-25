@@ -1,9 +1,13 @@
 package kanban.example.kanban.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.mongodb.lang.NonNull;
@@ -17,11 +21,21 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) {
+                return userRepository.findByEmail(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            }
+        };
+    }
+
     public List<User> allUsers() {
         return userRepository.findAll();
     }
 
-    public User getUserByEmail(@NonNull String email) {
+    public Optional<User> getUserByEmail(@NonNull String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -34,7 +48,7 @@ public class UserService {
     public User createUser(@NonNull User user) {
 
         // Check if user already exists by email
-        User existingUser = getUserByEmail(user.getEmail());
+        User existingUser = getUserByEmail(user.getEmail()).orElse(null);
         if (existingUser != null) {
             return null;
         }
