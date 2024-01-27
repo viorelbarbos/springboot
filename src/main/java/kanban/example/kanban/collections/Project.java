@@ -1,37 +1,38 @@
 package kanban.example.kanban.collections;
 
-import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.stereotype.Repository;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Document(collection = "tasks")
+@Repository
+@Document(collection = "projects")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Task {
+public class Project {
+
     @Id
     private String id;
 
-    private String title;
+    private String name;
     private String description;
-    private String status;
-
-    @DocumentReference
-    private User assignedUserId;
+    private String createdAt;
+    private String updatedAt;
 
     @DocumentReference
     private User createdByUserId;
-    private Date dueDate;
 
     @DocumentReference
-    private Board boardId;
-    private Date createdAt = new Date();
-    private Date updatedAt = new Date();
-    private Date finishedAt;
+    private List<User> members;
+
+    @DocumentReference
+    private List<Board> boards;
+
 }

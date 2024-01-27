@@ -33,7 +33,6 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ApiResponse<User>> createUser(@RequestBody User user) {
 
-        System.out.println(user);
 
         User newUser = userService.createUser(user);
 
