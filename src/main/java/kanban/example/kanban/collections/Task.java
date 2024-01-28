@@ -1,7 +1,5 @@
 package kanban.example.kanban.collections;
 
-import java.util.Date;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -28,9 +26,9 @@ public class Task {
 
     @DocumentReference
     private User createdByUser;
-    private Date dueDate;
+    private String dueDate;
 
-    private Date createdAt;
-    private Date updatedAt;
-    private Date finishedAt;
+    private String createdAt;
+    private String updatedAt;
+    private String finishedAt;
 }

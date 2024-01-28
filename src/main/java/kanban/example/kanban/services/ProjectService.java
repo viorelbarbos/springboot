@@ -6,7 +6,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kanban.example.kanban.collections.Board;
 import kanban.example.kanban.collections.Project;
+import kanban.example.kanban.collections.User;
 import kanban.example.kanban.repositories.ProjectRepository;
 
 @Service
@@ -42,6 +44,85 @@ public class ProjectService {
     public Project updateProject(Project project) {
         if (project.getId() == null)
             return null;
+        project.setUpdatedAt(String.valueOf(System.currentTimeMillis()));
+        return projectRepository.save(project);
+    }
+
+    public Project addMemberToProject(String projectId, User user) {
+
+        if (projectId == null || user == null)
+            return null;
+
+        Project project = projectRepository.findById(projectId).get();
+
+        if (project == null)
+            return null;
+
+        project.getMembers().add(user);
+
+        return projectRepository.save(project);
+    }
+
+    public Project addMembersToProject(String projectId, List<User> users) {
+
+        if (projectId == null || users == null)
+            return null;
+
+        Project project = projectRepository.findById(projectId).get();
+
+        if (project == null)
+            return null;
+
+        for (User user : users) {
+            if (!project.getMembers().contains(user))
+                project.getMembers().add(user);
+        }
+
+        return projectRepository.save(project);
+    }
+
+    public Project removeMemberFromProject(String projectId, User user) {
+
+        if (projectId == null || user == null)
+            return null;
+
+        Project project = projectRepository.findById(projectId).get();
+
+        if (project == null)
+            return null;
+
+        project.getMembers().remove(user);
+
+        return projectRepository.save(project);
+    }
+
+    public Project addBoardToProject(String projectId, Board board) {
+
+        if (projectId == null || board == null)
+            return null;
+
+        Project project = projectRepository.findById(projectId).get();
+
+        if (project == null)
+            return null;
+
+        project.getBoards().add(board);
+
+        return projectRepository.save(project);
+    }
+
+    public Project removeBoardFromProject(String projectId, Board board) {
+
+        if (projectId == null || board == null)
+            return null;
+
+        Project project = projectRepository.findById(projectId).get();
+
+        if (project == null)
+            return null;
+
+        project.getBoards().remove(board);
+
         return projectRepository.save(project);
     }
 

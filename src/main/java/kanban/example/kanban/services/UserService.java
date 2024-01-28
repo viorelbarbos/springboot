@@ -1,5 +1,6 @@
 package kanban.example.kanban.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,6 +64,20 @@ public class UserService {
 
     public void deleteUser(@NonNull String id) {
         userRepository.deleteById(id);
+    }
+
+    public List<User> getUsersByIds(List<String> ids) {
+        if (ids == null || ids.isEmpty())
+            return null;
+
+        List<User> users = new ArrayList<>();
+
+        for (String id : ids) {
+            users.add(getUserById(id));
+        }
+
+        return users;
+
     }
 
 }

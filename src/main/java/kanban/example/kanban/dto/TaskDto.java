@@ -1,7 +1,5 @@
 package kanban.example.kanban.dto;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,9 +19,9 @@ public class TaskDto {
     private UserDto assignedUser;
 
     private UserDto createdByUser;
-    private Date dueDate;
+    private String dueDate;
 
-    private Date createdAt;
-    private Date updatedAt;
-    private Date finishedAt;
+    private String createdAt;
+    private String updatedAt;
+    private String finishedAt;
 }

@@ -1,6 +1,5 @@
 package kanban.example.kanban.collections;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -25,7 +24,7 @@ public class Board {
     @DocumentReference
     private User createdByUser;
     private List<BoardColumn> columns;
-    private Date createdAt;
-    private Date updatedAt;
+    private String createdAt;
+    private String updatedAt;
 
 }

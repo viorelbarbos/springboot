@@ -1,6 +1,5 @@
 package kanban.example.kanban.dto;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -19,6 +18,6 @@ public class BoardDto {
 
     private UserDto createdByUser;
     private List<BoardColumnDto> columns;
-    private Date createdAt;
-    private Date updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }
