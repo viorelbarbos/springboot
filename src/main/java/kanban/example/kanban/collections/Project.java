@@ -27,7 +27,7 @@ public class Project {
     private String updatedAt;
 
     @DocumentReference
-    private User createdByUserId;
+    private User createdByUser;
 
     @DocumentReference
     private List<User> members;

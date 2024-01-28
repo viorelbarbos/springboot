@@ -3,7 +3,6 @@ package kanban.example.kanban.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,13 +43,10 @@ public class TaskController {
         }
     }
 
-    // get tasks by authenticated user
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<Task>>> getTasksByUser(HttpServletRequest request) {
 
-        String token = request.getHeader("Authorization").replace("Bearer ", "");
-
-        String id = authenticationService.getUserIdFromToken(token);
+        String id = authenticationService.getUserIdFromToken(request);
 
         try {
 

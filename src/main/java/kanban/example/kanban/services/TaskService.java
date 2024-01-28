@@ -19,7 +19,7 @@ public class TaskService {
     }
 
     public List<Task> getTasksByUser(String id) {
-        return taskRepository.findByCreatedByUserId(id);
+        return taskRepository.findByCreatedByUser(id);
     }
 
     public List<Task> getTasksByBoardId(String boardId) {
@@ -35,18 +35,7 @@ public class TaskService {
     }
 
     public Task updateTask(Task task) {
-
-        Task taskToUpdate = taskRepository.findById(task.getId()).get();
-        taskToUpdate.setTitle(task.getTitle());
-        taskToUpdate.setDescription(task.getDescription());
-        taskToUpdate.setAssignedUserId(task.getAssignedUserId());
-        taskToUpdate.setDueDate(task.getDueDate());
-        taskToUpdate.setUpdatedAt(task.getUpdatedAt());
-        taskToUpdate.setFinishedAt(task.getFinishedAt());
-        taskToUpdate.setStatus(task.getStatus());
-        taskToUpdate.setBoardId(task.getBoardId());
-        taskToUpdate.setCreatedByUserId(task.getCreatedByUserId());
-        return taskRepository.save(taskToUpdate);
+        return taskRepository.save(task);
     }
 
     public void deleteTask(String id) {

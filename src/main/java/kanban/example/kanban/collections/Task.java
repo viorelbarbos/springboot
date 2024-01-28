@@ -21,17 +21,16 @@ public class Task {
     private String title;
     private String description;
     private String status;
+    private String boardId;
 
     @DocumentReference
-    private User assignedUserId;
+    private User assignedUser;
 
     @DocumentReference
-    private User createdByUserId;
+    private User createdByUser;
     private Date dueDate;
 
-    @DocumentReference
-    private Board boardId;
-    private Date createdAt = new Date();
-    private Date updatedAt = new Date();
+    private Date createdAt;
+    private Date updatedAt;
     private Date finishedAt;
 }

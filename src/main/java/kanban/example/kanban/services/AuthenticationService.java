@@ -1,12 +1,15 @@
 package kanban.example.kanban.services;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kanban.example.kanban.collections.User;
 import kanban.example.kanban.dto.JwtAuthenticationResponse;
 import kanban.example.kanban.dto.SignInRequest;
@@ -48,11 +51,18 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-        var jwt = jwtService.generateToken(user);
+
+        Map<String, Object> extraClaims = new HashMap<>();
+
+        extraClaims.put("role", user.getRole());
+        extraClaims.put("userId", user.getId());
+
+        var jwt = jwtService.generateToken(user, extraClaims);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
 
-    public String getUserIdFromToken(String token) {
+    public String getUserIdFromToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
         return jwtService.getUserIdFromToken(token);
     }
 }

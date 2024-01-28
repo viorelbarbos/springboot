@@ -29,11 +29,11 @@ public class JwtService {
     }
 
     public String getUserIdFromToken(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, claims -> claims.get("userId", String.class));
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims) {
+        return generateToken(extraClaims, userDetails);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -78,4 +78,5 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
 }

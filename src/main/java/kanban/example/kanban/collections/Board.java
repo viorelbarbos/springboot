@@ -23,7 +23,7 @@ public class Board {
     private String description;
     
     @DocumentReference
-    private User createdByUserId;
+    private User createdByUser;
     private List<BoardColumn> columns;
     private Date createdAt;
     private Date updatedAt;
