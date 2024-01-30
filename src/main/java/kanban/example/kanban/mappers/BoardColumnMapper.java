@@ -17,6 +17,10 @@ public class BoardColumnMapper {
     }
 
     public static List<BoardColumnDto> mapToDtoList(List<BoardColumn> boardColumns) {
+
+        if (boardColumns == null)
+            return null;
+
         return boardColumns.stream().map(BoardColumnMapper::mapToDto).collect(java.util.stream.Collectors.toList());
     }
 

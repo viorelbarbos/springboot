@@ -22,6 +22,10 @@ public class ProjectMapper {
     }
 
     public static List<ProjectDto> mapToDtoList(List<Project> projects) {
+
+        if (projects == null)
+            return null;
+
         return projects.stream().map(ProjectMapper::mapToDto).collect(java.util.stream.Collectors.toList());
     }
 

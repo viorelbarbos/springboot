@@ -1,5 +1,6 @@
 package kanban.example.kanban.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -25,6 +26,10 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
+    public List<Project> getProjects() {
+        return projectRepository.findAll();
+    }
+
     public Project getProjectById(String id) {
         if (id == null)
             return null;
@@ -44,7 +49,7 @@ public class ProjectService {
     public Project updateProject(Project project) {
         if (project.getId() == null)
             return null;
-        project.setUpdatedAt(String.valueOf(System.currentTimeMillis()));
+        project.setUpdatedAt(getDate());
         return projectRepository.save(project);
     }
 
@@ -132,6 +137,10 @@ public class ProjectService {
             return;
 
         projectRepository.deleteById(id);
+    }
+
+    private String getDate() {
+        return new Date(System.currentTimeMillis()).toString();
     }
 
 }

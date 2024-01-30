@@ -24,6 +24,10 @@ public class TaskMapper {
     }
 
     public static List<TaskDto> mapToDtoList(List<Task> tasks) {
+
+        if (tasks == null)
+            return null;
+
         return tasks.stream().map(TaskMapper::mapToDto).collect(java.util.stream.Collectors.toList());
     }
 

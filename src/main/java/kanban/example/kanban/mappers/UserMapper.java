@@ -29,6 +29,10 @@ public class UserMapper {
     }
 
     public static List<UserDto> mapToDtoList(List<User> users) {
+
+        if (users == null)
+            return null;
+
         return users.stream().map(UserMapper::mapToDto).collect(java.util.stream.Collectors.toList());
     }
 

@@ -17,11 +17,14 @@ import kanban.example.kanban.collections.User;
 import kanban.example.kanban.dto.ProjectDto;
 import kanban.example.kanban.mappers.ProjectMapper;
 import kanban.example.kanban.pojo.AddMembersToProjectRequest;
+import kanban.example.kanban.pojo.RemoveMemberFromProjectRequest;
 import kanban.example.kanban.services.AuthenticationService;
 import kanban.example.kanban.services.ProjectService;
 import kanban.example.kanban.services.UserService;
 import kanban.example.kanban.utils.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/projects")
 public class ProjectController {
@@ -38,69 +41,180 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProjectDto>>> getProjects(HttpServletRequest request) {
 
-        String userId = authenticationService.getUserIdFromToken(request);
-        List<Project> projects = projectService.getProjectsByUser(userId);
+        try {
 
-        List<ProjectDto> projectDtos = ProjectMapper.mapToDtoList(projects);
+            String userId = authenticationService.getUserIdFromToken(request);
+            List<Project> projects = projectService.getProjectsByUser(userId);
 
-        ApiResponse<List<ProjectDto>> apiResponse = ApiResponse.success(" Projects fetched succesfully ",
-                HttpStatus.OK.value(), projectDtos);
+            List<ProjectDto> projectDtos = ProjectMapper.mapToDtoList(projects);
 
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+            ApiResponse<List<ProjectDto>> apiResponse = ApiResponse.success(" Projects fetched succesfully ",
+                    HttpStatus.OK.value(), projectDtos);
+
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("An error occured while fetching projects", e);
+
+            ApiResponse<List<ProjectDto>> apiResponse = ApiResponse.error("An error occured while fetching projects",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<ProjectDto>> createProject(HttpServletRequest request,
             @RequestBody Project project) {
 
-        String id = authenticationService.getUserIdFromToken(request);
-        User user = userService.getUserById(id);
+        try {
 
-        project.setCreatedByUser(user);
-        Project newProject = projectService.createProject(project);
+            String id = authenticationService.getUserIdFromToken(request);
+            User user = userService.getUserById(id);
 
-        ProjectDto projectDto = ProjectMapper.mapToDto(newProject);
+            project.setCreatedByUser(user);
+            Project newProject = projectService.createProject(project);
 
-        ApiResponse<ProjectDto> apiResponse = ApiResponse.success(" Project created succesfully ",
-                HttpStatus.CREATED.value(), projectDto);
+            ProjectDto projectDto = ProjectMapper.mapToDto(newProject);
 
-        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.success(" Project created succesfully ",
+                    HttpStatus.CREATED.value(), projectDto);
+
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            log.error("An error occured while creating project", e);
+
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.error("An error occured while creating project",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/members")
     public ResponseEntity<ApiResponse<ProjectDto>> addMembersToProject(HttpServletRequest request,
             @RequestBody AddMembersToProjectRequest data) {
 
-        String projectId = data.getProjectId();
-        List<String> newMembersIds = data.getNewMembersIds();
+        try {
+            String projectId = data.getProjectId();
+            List<String> newMembersIds = data.getNewMembersIds();
 
-        if (newMembersIds == null || projectId == null)
-            return null;
+            if (newMembersIds == null || projectId == null)
+                return null;
 
-        String userId = authenticationService.getUserIdFromToken(request);
+            String userId = authenticationService.getUserIdFromToken(request);
 
-        Project project = projectService.getProjectById(projectId);
+            Project project = projectService.getProjectById(projectId);
 
-        if (project == null)
-            return null;
+            if (project == null)
+                return null;
 
-        if (!project.getCreatedByUser().getId().equals(userId))
-            return null;
+            if (!project.getCreatedByUser().getId().equals(userId))
+                return null;
 
-        List<User> newMembers = userService.getUsersByIds(newMembersIds);
+            List<User> newMembers = userService.getUsersByIds(newMembersIds);
 
-        if (newMembers == null)
-            return null;
+            if (newMembers == null)
+                return null;
 
-        Project updatedProject = projectService.addMembersToProject(projectId, newMembers);
+            Project updatedProject = projectService.addMembersToProject(projectId, newMembers);
 
-        ProjectDto projectDto = ProjectMapper.mapToDto(updatedProject);
+            ProjectDto projectDto = ProjectMapper.mapToDto(updatedProject);
 
-        ApiResponse<ProjectDto> apiResponse = ApiResponse.success(" Project updated succesfully ",
-                HttpStatus.OK.value(), projectDto);
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.success(" Project updated succesfully ",
+                    HttpStatus.OK.value(), projectDto);
 
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("An error occured while adding members to project", e);
 
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.error("An error occured while adding members to project",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @PostMapping("/member/remove")
+    public ResponseEntity<ApiResponse<ProjectDto>> removeMemberFromProject(HttpServletRequest request,
+            @RequestBody RemoveMemberFromProjectRequest data) {
+
+        try {
+            String projectId = data.getProjectId();
+            String memberId = data.getMemberId();
+
+            if (projectId == null || memberId == null)
+                return null;
+
+            String userId = authenticationService.getUserIdFromToken(request);
+
+            Project project = projectService.getProjectById(projectId);
+
+            if (project == null)
+                return null;
+
+            if (!project.getCreatedByUser().getId().equals(userId))
+                return null;
+
+            User user = userService.getUserById(memberId);
+
+            Project updatedProject = projectService.removeMemberFromProject(projectId, user);
+
+            ProjectDto projectDto = ProjectMapper.mapToDto(updatedProject);
+
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.success(" Project updated succesfully ",
+                    HttpStatus.OK.value(), projectDto);
+
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("An error occured while removing member from project", e);
+
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.error(
+                    "An error occured while removing member from project",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<ApiResponse<ProjectDto>> updateProject(HttpServletRequest request,
+            @RequestBody Project project) {
+
+        try {
+
+            String userId = authenticationService.getUserIdFromToken(request);
+
+            Project projectFromDb = projectService.getProjectById(project.getId());
+
+            if (projectFromDb == null)
+                return null;
+
+            if (!projectFromDb.getCreatedByUser().getId().equals(userId))
+                return null;
+
+            if (project.getName() != null)
+                projectFromDb.setName(project.getName());
+
+            if (project.getDescription() != null)
+                projectFromDb.setDescription(project.getDescription());
+
+            Project updatedProject = projectService.updateProject(projectFromDb);
+
+            ProjectDto projectDto = ProjectMapper.mapToDto(updatedProject);
+
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.success(" Project updated succesfully ",
+                    HttpStatus.OK.value(), projectDto);
+
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+
+            log.error("An error occured while updating project", e);
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.error("An error occured while updating project",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
     }
 
 }
