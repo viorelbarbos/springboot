@@ -18,5 +18,7 @@ public class BoardColumnDto {
 
     private String color;
 
+    private String boardId;
+
     private List<TaskDto> tasks;
 }

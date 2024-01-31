@@ -12,6 +12,7 @@ public class BoardMapper {
                 .id(board.getId())
                 .name(board.getName())
                 .description(board.getDescription())
+                .projectId(board.getProjectId())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
                 .createdByUser(UserMapper.mapToDto(board.getCreatedByUser()))

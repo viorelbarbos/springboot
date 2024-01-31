@@ -11,6 +11,8 @@ public class BoardColumnMapper {
         return BoardColumnDto.builder()
                 .id(boardColumn.getId())
                 .title(boardColumn.getTitle())
+                .color(boardColumn.getColor())
+                .boardId(boardColumn.getBoardId())
                 .tasks(TaskMapper.mapToDtoList(boardColumn.getTasks()))
                 .build();
 

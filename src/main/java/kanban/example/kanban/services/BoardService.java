@@ -93,4 +93,12 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
+    public List<Board> getBoardsByProjectId(String projectId) {
+
+        if (projectId == null)
+            return null;
+
+        return boardRepository.findByProjectId(projectId);
+    }
+
 }

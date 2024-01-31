@@ -15,6 +15,7 @@ public class TaskDto {
     private String title;
     private String description;
     private String status;
+    private String boardColumnId;
 
     private UserDto assignedUser;
 

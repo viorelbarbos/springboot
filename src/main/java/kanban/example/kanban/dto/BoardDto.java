@@ -15,6 +15,7 @@ public class BoardDto {
     private String id;
     private String name;
     private String description;
+    private String projectId;
 
     private UserDto createdByUser;
     private List<BoardColumnDto> columns;

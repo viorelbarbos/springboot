@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -214,6 +216,71 @@ public class ProjectController {
                     HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
+        }
+    }
+
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<ApiResponse<String>> deleteProject(HttpServletRequest request,
+            @PathVariable String projectId) {
+
+        try {
+
+            String userId = authenticationService.getUserIdFromToken(request);
+            User user = userService.getUserById(userId);
+
+            Project project = projectService.getProjectById(projectId);
+
+            if (project == null) {
+                return new ResponseEntity<>(ApiResponse.error("Project not found", HttpStatus.NOT_FOUND.value()),
+                        HttpStatus.NOT_FOUND);
+            }
+
+            if (!project.getCreatedByUser().getId().equals(user.getId())) {
+                return new ResponseEntity<>(ApiResponse.error("You are not authorized to delete this project",
+                        HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+            }
+
+            projectService.deleteProject(projectId);
+
+            return new ResponseEntity<>(ApiResponse.success("Project deleted succesfully", HttpStatus.OK.value(),
+                    "Project deleted succesfully"), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("An error occured while deleting project", e);
+
+            return new ResponseEntity<>(ApiResponse.error("An error occured while deleting project" + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+    }
+
+    @GetMapping("/{projectId}")
+    public ResponseEntity<ApiResponse<ProjectDto>> getProjectById(HttpServletRequest request,
+            @PathVariable String projectId) {
+
+        try {
+
+            Project project = projectService.getProjectById(projectId);
+
+            if (project == null) {
+                return new ResponseEntity<>(ApiResponse.error("Project not found", HttpStatus.NOT_FOUND.value()),
+                        HttpStatus.NOT_FOUND);
+            }
+
+            ProjectDto projectDto = ProjectMapper.mapToDto(project);
+
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.success(" Project fetched succesfully ",
+                    HttpStatus.OK.value(), projectDto);
+
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("An error occured while fetching project", e);
+
+            ApiResponse<ProjectDto> apiResponse = ApiResponse.error("An error occured while fetching project",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

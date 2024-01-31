@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import com.mongodb.lang.NonNull;
 
 import kanban.example.kanban.collections.User;
 import kanban.example.kanban.repositories.UserRepository;
@@ -47,7 +46,6 @@ public class UserService {
 
     public User createUser(@NonNull User user) {
 
-        // Check if user already exists by email
         User existingUser = getUserByEmail(user.getEmail()).orElse(null);
         if (existingUser != null) {
             return null;
@@ -63,6 +61,10 @@ public class UserService {
     }
 
     public void deleteUser(@NonNull String id) {
+
+        if (id == null)
+            return;
+
         userRepository.deleteById(id);
     }
 

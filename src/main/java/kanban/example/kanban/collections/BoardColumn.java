@@ -26,6 +26,8 @@ public class BoardColumn {
 
     private String color;
 
+    private String boardId;
+
     @DocumentReference
     private List<Task> tasks;
 }

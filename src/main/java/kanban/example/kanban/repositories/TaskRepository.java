@@ -10,7 +10,7 @@ import kanban.example.kanban.collections.Task;
 @Repository
 public interface TaskRepository extends MongoRepository<Task, String> {
 
-    List<Task> findByBoardId(String boardId);
+    List<Task> findByBoardColumnId(String boardId);
 
     List<Task> findByCreatedByUser(String userId);
 

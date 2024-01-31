@@ -13,6 +13,7 @@ public class TaskMapper {
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .status(task.getStatus())
+                .boardColumnId(task.getBoardColumnId())
                 .createdAt(task.getCreatedAt())
                 .updatedAt(task.getUpdatedAt())
                 .dueDate(task.getDueDate())

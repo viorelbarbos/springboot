@@ -20,9 +20,13 @@ public class Board {
     private String id;
     private String name;
     private String description;
+
+    private String projectId;
     
     @DocumentReference
     private User createdByUser;
+
+    @DocumentReference
     private List<BoardColumn> columns;
     private String createdAt;
     private String updatedAt;

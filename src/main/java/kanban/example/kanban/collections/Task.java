@@ -19,7 +19,7 @@ public class Task {
     private String title;
     private String description;
     private String status;
-    private String boardId;
+    private String boardColumnId;
 
     @DocumentReference
     private User assignedUser;
