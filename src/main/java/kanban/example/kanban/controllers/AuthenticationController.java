@@ -11,6 +11,7 @@ import kanban.example.kanban.collections.User;
 import kanban.example.kanban.dto.JwtAuthenticationResponse;
 import kanban.example.kanban.dto.SignInRequest;
 import kanban.example.kanban.dto.SignUpRequest;
+import kanban.example.kanban.pojo.SignupResponse;
 import kanban.example.kanban.services.AuthenticationService;
 import kanban.example.kanban.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,14 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<User>> signup(@RequestBody SignUpRequest request) {
-        String message = authenticationService.signup(request);
+        SignupResponse signupResponse = authenticationService.signup(request);
 
-        ApiResponse<User> response = ApiResponse.success(message, HttpStatus.CREATED.value(),
+        if (!signupResponse.getSuccess()) {
+            ApiResponse<User> response = ApiResponse.error(signupResponse.getMessage(), HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        ApiResponse<User> response = ApiResponse.success(signupResponse.getMessage(), HttpStatus.CREATED.value(),
                 null);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

@@ -15,6 +15,7 @@ import kanban.example.kanban.dto.JwtAuthenticationResponse;
 import kanban.example.kanban.dto.SignInRequest;
 import kanban.example.kanban.dto.SignUpRequest;
 import kanban.example.kanban.models.Role;
+import kanban.example.kanban.pojo.SignupResponse;
 import kanban.example.kanban.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +28,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public String signup(SignUpRequest request) {
+    public SignupResponse signup(SignUpRequest request) {
         var user = User
                 .builder()
                 .userName(request.getUserName())
@@ -41,9 +42,9 @@ public class AuthenticationService {
         user = userService.createUser(user);
 
         if (user == null)
-            return "Email already exists";
+            return new SignupResponse("Email already exists", false);
 
-        return "Registration successful";
+        return new SignupResponse("User created successfully", true);
     }
 
     public JwtAuthenticationResponse signin(SignInRequest request) {
@@ -61,7 +62,6 @@ public class AuthenticationService {
         var jwt = jwtService.generateToken(user, extraClaims);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
-
 
     public String getUserIdFromToken(HttpServletRequest request) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");

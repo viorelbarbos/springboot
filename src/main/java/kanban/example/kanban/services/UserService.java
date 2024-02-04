@@ -47,11 +47,17 @@ public class UserService {
     public User createUser(@NonNull User user) {
 
         User existingUser = getUserByEmail(user.getEmail()).orElse(null);
-        if (existingUser != null) {
+        User existingUserUserName = findByUserName(user.getUserName()).orElse(null);
+        if (existingUser != null || existingUserUserName != null) {
             return null;
         }
 
         return userRepository.save(user);
+    }
+
+    public Optional<User> findByUserName(String userName) {
+
+        return userRepository.findByUserName(userName);
     }
 
     public User updateUser(@NonNull User user) {
