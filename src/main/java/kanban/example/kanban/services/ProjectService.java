@@ -20,7 +20,7 @@ public class ProjectService {
 
     public Project createProject(Project project) {
 
-        if (project.getId() != null)
+        if (project == null)
             return null;
 
         return projectRepository.save(project);

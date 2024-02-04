@@ -1,5 +1,6 @@
 package kanban.example.kanban.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,22 @@ public class TaskService {
         return taskRepository.findByCreatedByUser(id);
     }
 
-    public List<Task> getTasksByBoardId(String boardId) {
+    public List<Task> findByBoardColumnId(String boardId) {
         return taskRepository.findByBoardColumnId(boardId);
+    }
+
+    public List<Task> getTasksByBoardId(String boardId) {
+
+        List<BoardColumn> boardColumns = boardColumnService.getBoardColumnByBoardId(boardId);
+
+        List<Task> tasks = new ArrayList<>();
+
+        for (BoardColumn boardColumn : boardColumns) {
+            tasks.addAll(findByBoardColumnId(boardColumn.getId()));
+        }
+
+        return tasks;
+
     }
 
     public Task getTaskById(String id) {

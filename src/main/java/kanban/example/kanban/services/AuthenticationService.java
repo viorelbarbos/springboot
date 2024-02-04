@@ -56,10 +56,12 @@ public class AuthenticationService {
 
         extraClaims.put("role", user.getRole());
         extraClaims.put("userId", user.getId());
+        extraClaims.put("userName", user.getUserName());
 
         var jwt = jwtService.generateToken(user, extraClaims);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
+
 
     public String getUserIdFromToken(HttpServletRequest request) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");

@@ -82,7 +82,7 @@ public class TaskController {
 
         try {
 
-            List<Task> tasks = taskService.getTasksByBoardId(id);
+            List<Task> tasks = taskService.findByBoardColumnId(id);
 
             List<TaskDto> taskDtos = TaskMapper.mapToDtoList(tasks);
 
@@ -217,6 +217,27 @@ public class TaskController {
 
         } catch (Exception e) {
             ApiResponse<String> response = ApiResponse.<String>error("Task not deleted",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/board/{boardId}")
+    public ResponseEntity<ApiResponse<List<TaskDto>>> getTasksByBoardId(HttpServletRequest request,
+            @PathVariable String boardId) {
+
+        try {
+
+            List<Task> tasks = taskService.getTasksByBoardId(boardId);
+
+            List<TaskDto> taskDtos = TaskMapper.mapToDtoList(tasks);
+
+            ApiResponse<List<TaskDto>> response = ApiResponse.<List<TaskDto>>success("Tasks found",
+                    HttpStatus.CREATED.value(), taskDtos);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            ApiResponse<List<TaskDto>> response = ApiResponse.<List<TaskDto>>error("Tasks not found",
                     HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
