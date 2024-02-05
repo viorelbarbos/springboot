@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kanban.example.kanban.collections.User;
+import kanban.example.kanban.dto.ProjectDto;
+import kanban.example.kanban.dto.UserDto;
+import kanban.example.kanban.mappers.UserMapper;
 import kanban.example.kanban.services.UserService;
 import kanban.example.kanban.utils.ApiResponse;
 
@@ -24,15 +27,21 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<ApiResponse<List<UserDto>>> getUsers() {
 
         List<User> users = userService.allUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+
+        List<UserDto> userDtos = UserMapper.mapToDtoList(users);
+
+        ApiResponse<List<UserDto>> apiResponse = ApiResponse.success("Users fetched successfully",
+                HttpStatus.OK.value(),
+                userDtos);
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<User>> createUser(@RequestBody User user) {
-
 
         User newUser = userService.createUser(user);
 

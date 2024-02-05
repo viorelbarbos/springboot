@@ -284,4 +284,34 @@ public class ProjectController {
         }
     }
 
+    //get project by createdByUserId
+    @GetMapping("/createdBy/{userId}")
+    public ResponseEntity<ApiResponse<List<ProjectDto>>> getProjectsByCreatedByUserId(HttpServletRequest request,
+            @PathVariable String userId) {
+
+        try {
+
+            List<Project> projects = projectService.getProjectsByUser(userId);
+
+            if (projects == null) {
+                return new ResponseEntity<>(ApiResponse.error("Projects not found", HttpStatus.NOT_FOUND.value()),
+                        HttpStatus.NOT_FOUND);
+            }
+
+            List<ProjectDto> projectDtos = ProjectMapper.mapToDtoList(projects);
+
+            ApiResponse<List<ProjectDto>> apiResponse = ApiResponse.success(" Projects fetched succesfully ",
+                    HttpStatus.OK.value(), projectDtos);
+
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("An error occured while fetching projects", e);
+
+            ApiResponse<List<ProjectDto>> apiResponse = ApiResponse.error("An error occured while fetching projects",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

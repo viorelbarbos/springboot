@@ -24,6 +24,9 @@ public class BoardService {
 
     public Board createBoard(String projectId, Board board) {
 
+
+        board.setProjectId(projectId);
+
         board.setCreatedAt(utils.getDate());
         Board savedBoard = boardRepository.save(board);
 

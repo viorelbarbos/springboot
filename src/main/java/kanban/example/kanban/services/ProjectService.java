@@ -22,7 +22,7 @@ public class ProjectService {
 
         if (project == null)
             return null;
-
+        project.setCreatedAt(getDate());
         return projectRepository.save(project);
     }
 

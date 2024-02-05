@@ -12,7 +12,7 @@ public class UserMapper {
         }
         UserDto userDTO = new UserDto();
         userDTO.setId(user.getId());
-        userDTO.setUserName(user.getUsername());
+        userDTO.setUserName(user.getUserName());
         userDTO.setEmail(user.getEmail());
         return userDTO;
     }

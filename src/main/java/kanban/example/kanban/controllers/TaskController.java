@@ -34,8 +34,8 @@ public class TaskController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<Task>> createTask(HttpServletRequest request, @RequestBody Task task) {
+    @PostMapping()
+    public ResponseEntity<ApiResponse<TaskDto>> createTask(HttpServletRequest request, @RequestBody Task task) {
         try {
 
             String id = authenticationService.getUserIdFromToken(request);
@@ -45,12 +45,15 @@ public class TaskController {
             task.setCreatedByUser(user);
 
             Task newTask = taskService.createTask(task);
-            ApiResponse<Task> response = ApiResponse.success("Task created successfully", HttpStatus.CREATED.value(),
-                    newTask);
+
+            TaskDto taskDto = TaskMapper.mapToDto(newTask);
+
+            ApiResponse<TaskDto> response = ApiResponse.success("Task created successfully", HttpStatus.CREATED.value(),
+            taskDto);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            ApiResponse<Task> response = ApiResponse.error("Task already exists",
+            ApiResponse<TaskDto> response = ApiResponse.error("Task already exists",
                     HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }

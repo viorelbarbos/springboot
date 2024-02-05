@@ -23,6 +23,8 @@ public class BoardColumnService {
         if (boardId == null || boardColumn == null)
             return null;
 
+        boardColumn.setBoardId(boardId);
+
         BoardColumn boardColumnSaved = boardColumnRepository.save(boardColumn);
 
         boardService.addColumnToBoard(boardId, boardColumnSaved);

@@ -193,4 +193,27 @@ public class BoardController {
 
     }
 
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<ApiResponse<List<BoardDto>>> getBoardsByProjectId(HttpServletRequest request,
+            @PathVariable String projectId) {
+
+        try {
+
+            List<Board> boards = boardService.getBoardsByProjectId(projectId);
+
+            List<BoardDto> boardDtos = BoardMapper.mapToDtoList(boards);
+
+            return new ResponseEntity<>(ApiResponse.success("Boards fetched succesfully", HttpStatus.OK.value(),
+                    boardDtos), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("An error occured while fetching boards", e);
+
+            return new ResponseEntity<>(ApiResponse.error("An error occured while fetching boards",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+    }
+
 }
