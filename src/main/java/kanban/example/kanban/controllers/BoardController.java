@@ -18,9 +18,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import kanban.example.kanban.collections.Board;
 import kanban.example.kanban.collections.User;
 import kanban.example.kanban.dto.BoardDto;
+import kanban.example.kanban.dto.UserDto;
 import kanban.example.kanban.mappers.BoardMapper;
+import kanban.example.kanban.mappers.UserMapper;
 import kanban.example.kanban.pojo.CreateBoardRequest;
 import kanban.example.kanban.services.BoardService;
+import kanban.example.kanban.services.ProjectService;
 import kanban.example.kanban.services.UserService;
 import kanban.example.kanban.utils.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +41,9 @@ public class BoardController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProjectService projectService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<BoardDto>>> getBoards(HttpServletRequest request) {
@@ -210,6 +216,38 @@ public class BoardController {
             log.error("An error occured while fetching boards", e);
 
             return new ResponseEntity<>(ApiResponse.error("An error occured while fetching boards",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+    }
+
+    // get all users that are part of the project of the board
+    @GetMapping("/users/{boardId}")
+    public ResponseEntity<ApiResponse<List<UserDto>>> getUsersByBoardId(HttpServletRequest request,
+            @PathVariable String boardId) {
+
+        try {
+
+            // get the project id of the board
+            Board board = boardService.getBoardById(boardId);
+
+            if (board == null) {
+                return new ResponseEntity<>(ApiResponse.error("Board not found", HttpStatus.NOT_FOUND.value()),
+                        HttpStatus.NOT_FOUND);
+            }
+
+            List<User> users = projectService.getMembersByProjectId(board.getProjectId());
+
+            List<UserDto> userDtos = UserMapper.mapToDtoList(users);
+
+            return new ResponseEntity<>(ApiResponse.success("Users fetched succesfully", HttpStatus.OK.value(),
+                    userDtos), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("An error occured while fetching users", e);
+
+            return new ResponseEntity<>(ApiResponse.error("An error occured while fetching users",
                     HttpStatus.INTERNAL_SERVER_ERROR.value()), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }

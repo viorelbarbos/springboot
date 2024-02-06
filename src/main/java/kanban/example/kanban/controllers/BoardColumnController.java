@@ -169,7 +169,9 @@ public class BoardColumnController {
 
         try {
 
-            String boardId = boardColumnService.getBoardColumnById(boardColumnId).getBoardId();
+            BoardColumn boardColumn = boardColumnService.getBoardColumnById(boardColumnId);
+
+            String boardId = boardColumn.getBoardId();
 
             boardColumnService.deleteBoardColumn(boardColumnId, boardId);
 

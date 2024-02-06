@@ -48,6 +48,10 @@ public class ProjectController {
             String userId = authenticationService.getUserIdFromToken(request);
             List<Project> projects = projectService.getProjectsByUser(userId);
 
+            List<Project> projectsWhereUserIsMember = projectService.getProjectsWhereUserIsMember(userId);
+
+            projects.addAll(projectsWhereUserIsMember);
+
             List<ProjectDto> projectDtos = ProjectMapper.mapToDtoList(projects);
 
             ApiResponse<List<ProjectDto>> apiResponse = ApiResponse.success(" Projects fetched succesfully ",

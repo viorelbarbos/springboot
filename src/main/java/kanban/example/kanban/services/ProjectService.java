@@ -139,6 +139,19 @@ public class ProjectService {
         projectRepository.deleteById(id);
     }
 
+    public List<User> getMembersByProjectId(String projectId) {
+
+        if (projectId == null)
+            return null;
+
+        Project project = projectRepository.findById(projectId).get();
+
+        if (project == null)
+            return null;
+
+        return project.getMembers();
+    }
+
     private String getDate() {
         return new Date(System.currentTimeMillis()).toString();
     }
