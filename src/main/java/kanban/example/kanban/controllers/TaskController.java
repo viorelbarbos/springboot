@@ -49,7 +49,7 @@ public class TaskController {
             TaskDto taskDto = TaskMapper.mapToDto(newTask);
 
             ApiResponse<TaskDto> response = ApiResponse.success("Task created successfully", HttpStatus.CREATED.value(),
-            taskDto);
+                    taskDto);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -134,6 +134,9 @@ public class TaskController {
 
             if (task.getDescription() != null) {
                 oldTask.setDescription(task.getDescription());
+            }
+            if (task.getDueDate() != null) {
+                oldTask.setDueDate(task.getDueDate());
             }
 
             Task updatedTask = taskService.updateTask(oldTask);

@@ -17,6 +17,7 @@ public class ProjectService {
 
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
 
     public Project createProject(Project project) {
 
@@ -82,8 +83,9 @@ public class ProjectService {
             if (!project.getMembers().contains(user))
                 project.getMembers().add(user);
         }
-
         return projectRepository.save(project);
+
+
     }
 
     public Project removeMemberFromProject(String projectId, User user) {

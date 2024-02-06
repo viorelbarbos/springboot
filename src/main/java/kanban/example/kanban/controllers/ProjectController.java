@@ -50,7 +50,11 @@ public class ProjectController {
 
             List<Project> projectsWhereUserIsMember = projectService.getProjectsWhereUserIsMember(userId);
 
-            projects.addAll(projectsWhereUserIsMember);
+            for (Project project : projectsWhereUserIsMember) {
+                if (!projects.contains(project)) {
+                    projects.add(project);
+                }
+            }
 
             List<ProjectDto> projectDtos = ProjectMapper.mapToDtoList(projects);
 
